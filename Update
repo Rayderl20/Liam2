@@ -1,0 +1,79 @@
+// Created on Mon March 23 2020
+int l_motor = 0;
+int r_motor = 2;
+int r_bump = 9;
+int l_bump = 8;
+int speed = 80;
+int ss_speed = 20;
+int sspeed = 44;
+int fspeed = 100;
+int r_range = 2;
+int l_tophat = 5;
+int r_tophat = 6;
+
+void forward(){ //go forward
+motor(l_motor, speed);
+motor(r_motor, speed);
+}
+void backup(){  //back up
+	motor(l_motor, -speed);
+motor(r_motor, -speed);
+}
+void left_turn(){ //turn left
+motor(l_motor,-speed);
+motor(r_motor, speed);
+}
+void right_turn(){ //turn right
+motor(l_motor, ss_speed);
+motor(r_motor,-ss_speed);
+}
+void veer_left(){ //veer left
+motor(l_motor,sspeed);
+motor(r_motor,speed);
+}
+void veer_right(){ //veer right
+motor(l_motor,speed);
+motor(r_motor,sspeed);
+}
+void start(){     //drive until it sees the line
+while (analog(l_tophat)<200 && analog(r_tophat)<200){
+	forward();
+}	
+}
+int main()
+{
+
+right_turn();
+msleep(150);
+ao();
+					// Turn until parallel to wall
+
+while (digital(r_bump) ==0 && digital(l_bump)==0){ //drive until bump sensor is pushed
+forward();
+}
+ao(); 
+msleep(1000);
+backup();
+msleep(500);
+ao();
+left_turn();
+msleep(200);
+ao();
+start();
+
+while (digital(r_bump) ==0 && digital(l_bump)==0){
+	
+if (analog(l_tophat)<700){ //follow line, if it is too far left, veer right
+veer_right();
+}
+
+if (analog(l_tophat)>700){ //if it is too far right, veer left
+veer_left();
+
+}
+}
+ao();
+printf("Hello, World!\n");
+return 0;
+}
+
